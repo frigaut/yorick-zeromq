@@ -1,47 +1,12 @@
 plug_dir,".";
 require,"zmq.i";
 
-func hwserver(void)
-/* server:
-   use zmq.REP
-   use bind to "tcp://*:5555"
-*/
-{
-  extern ctx,soc;
-  ctx = zmq_ctx_new(); 
-  soc = zmq_socket(ctx,ZMQ_REP);
-  zmq_bind,soc,"tcp://*:5555"; // could be ipc:///tmp/feeds/0
-  do {
-    msg = zmq_recv(soc,string,5,0)(1);
-    write,format="Client said \"%s\", answering \"World\"\n",msg;
-    zmq_send,soc,"World";
-    pause,100;
-  } while (msg!="quit");
-  // so = [];
-  // s  = [];
-}
-
-func hwclient(msg)
-/* client:
-   Use zmq.REQ
-   Use connect to "tcp://localhost:5555"
-*/
-{
-  extern ctx,soc;
-  if (msg==[]) msg="Hello";
-  ctx = zmq_ctx_new();
-  soc = zmq_socket(ctx,ZMQ_REQ); 
-  zmq_connect,soc,"tcp://localhost:5555";
-  zmq_send,soc,msg;
-  write,format="Sent \"%s\", Server answered \"%s\"\n",msg,zmq_recv(soc,string,5,0)(1);
-}
-
 
 func demo_server(void)
 {
-  ctx = zmq_ctx_new(); 
+  ctx = zmq_ctx_new();
   soc = zmq_socket(ctx,ZMQ_REP);
-  zmq_bind,soc,"tcp://*:5555"; 
+  zmq_bind,soc,"tcp://*:5555";
 
   do {
     msg = zmq_recv(soc,string,5,0);
@@ -56,7 +21,7 @@ func demo_client(msg)
   if (msg==[]) msg="Hello";
 
   ctx = zmq_ctx_new();
-  soc = zmq_socket(ctx,ZMQ_REQ); 
+  soc = zmq_socket(ctx,ZMQ_REQ);
   zmq_connect,soc,"tcp://localhost:5555";
 
   for (n=1;n<=10;n++) {
@@ -69,9 +34,9 @@ func demo_client(msg)
 
 func demo_server2(void)
 {
-  ctx = zmq_ctx_new(); 
+  ctx = zmq_ctx_new();
   soc = zmq_socket(ctx,ZMQ_REP);
-  zmq_bind,soc,"tcp://*:5555"; 
+  zmq_bind,soc,"tcp://*:5555";
 
   do {
     msg = zmq_recv(soc,long,10,0);
@@ -86,7 +51,7 @@ func demo_client2(msg)
   if (msg==[]) msg="Hello";
 
   ctx = zmq_ctx_new();
-  soc = zmq_socket(ctx,ZMQ_REQ); 
+  soc = zmq_socket(ctx,ZMQ_REQ);
   zmq_connect,soc,"tcp://localhost:5555";
 
   for (n=1;n<=10;n++) {
@@ -103,11 +68,11 @@ func demo_server3(void)
 {
   if (findfiles("/tmp/feeds")==[]) error,"Have to create /tmp/feeds first";
   write,format="%s\n","Creating context";
-  ctx = zmq_ctx_new(); 
+  ctx = zmq_ctx_new();
   write,format="%s\n","Creating socket";
   soc = zmq_socket(ctx,ZMQ_REP);
   write,format="%s\n","Binding to socket";
-  zmq_bind,soc,"ipc:///tmp/feeds/0"; 
+  zmq_bind,soc,"ipc:///tmp/feeds/0";
 
   do {
     write,format="%s\n","Receiving/waiting for message";
@@ -127,7 +92,7 @@ func demo_client3(nmax)
   write,format="%s\n","Creating context";
   ctx = zmq_ctx_new();
   write,format="%s\n","Creating socket";
-  soc = zmq_socket(ctx,ZMQ_REQ); 
+  soc = zmq_socket(ctx,ZMQ_REQ);
   write,format="%s\n","Connecting to socket";
   zmq_connect,soc,"ipc:///tmp/feeds/0";
 
@@ -192,6 +157,7 @@ imn = 512;
 
 func demo_pub2(void)
 {
+  if (findfiles("/tmp/feeds")==[]) error,"Have to create /tmp/feeds first";
   ctx = zmq_ctx_new();
   pub = zmq_socket (ctx, ZMQ_PUB);
   // rc  = zmq_bind (pub, "tcp://*:5556");
@@ -228,6 +194,7 @@ func demo_sub2(nmax)
 
 func demo_pub3(void)
 {
+  if (findfiles("/tmp/feeds")==[]) error,"Have to create /tmp/feeds first";
   ctx = zmq_ctx_new();
   pub = zmq_socket (ctx, ZMQ_PUB);
   rc  = zmq_bind (pub, "ipc:///tmp/feeds/0");
@@ -266,15 +233,48 @@ func demo_sub3(nmax)
   ctx = [];
 }
 
+// func hwserver(void)
+// /* server:
+//    use zmq.REP
+//    use bind to "tcp://*:5555"
+// */
+// {
+//   extern ctx,soc;
+//   ctx = zmq_ctx_new();
+//   soc = zmq_socket(ctx,ZMQ_REP);
+//   zmq_bind,soc,"tcp://*:5555"; // could be ipc:///tmp/feeds/0
+//   do {
+//     msg = zmq_recv(soc,string,5,0)(1);
+//     write,format="Client said \"%s\", answering \"World\"\n",msg;
+//     zmq_send,soc,"World";
+//     pause,100;
+//   } while (msg!="quit");
+// }
+//
+// func hwclient(msg)
+// /* client:
+//    Use zmq.REQ
+//    Use connect to "tcp://localhost:5555"
+// */
+// {
+//   extern ctx,soc;
+//   if (msg==[]) msg="Hello";
+//   ctx = zmq_ctx_new();
+//   soc = zmq_socket(ctx,ZMQ_REQ);
+//   zmq_connect,soc,"tcp://localhost:5555";
+//   zmq_send,soc,msg;
+//   write,format="Sent \"%s\", Server answered \"%s\"\n",msg,zmq_recv(soc,string,5,0)(1);
+// }
+//
 
 
 /* above, display of a nxn (x100):
 Time 100 iter.
-n     direct  zmq  
-32    0.89    1.00 
+n     direct  zmq
+32    0.89    1.00
 128   13.17   13.16
-512   0.83    1.28 
-2048  7.31    5.37 
+512   0.83    1.28
+2048  7.31    5.37
 impressive !
 
 now without reform and display, just to see the pure xfer time:
