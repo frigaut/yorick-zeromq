@@ -271,7 +271,7 @@ void Y_zmq_test(int argc)
   msg = ypush_q(dims);
   msg[0] = p_strcpy("celine");
   n = strlen(*msg);
-  printf("Got %s [length %d]\n",*msg,n);
+  printf("Got %s [length %ld]\n",*msg,n);
 }
 
 /* 0MQ constants */

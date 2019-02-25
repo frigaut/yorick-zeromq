@@ -101,7 +101,7 @@ func demo_client2(msg)
 
 func demo_server3(void)
 {
-  if (!findfiles("/tmp/feeds")) error,"Have to create /tmp/feeds first";
+  if (findfiles("/tmp/feeds")==[]) error,"Have to create /tmp/feeds first";
   write,format="%s\n","Creating context";
   ctx = zmq_ctx_new(); 
   write,format="%s\n","Creating socket";
