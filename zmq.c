@@ -2,7 +2,7 @@
  * zeromq.c
  * wrapper routines for the zeromq C library
  *
- * Copyright (c) 2013, Francois RIGAUT (francois.rigaut@anu.edu.au)
+ * Copyright (c) 2013-2019, Francois RIGAUT (francois.rigaut@anu.edu.au)
  *
  * This program is free software; you can redistribute it and/or  modify it
  * under the terms of the GNU General Public License  as  published  by the
@@ -92,7 +92,7 @@ static void on_free_socket(void *addr)
 void Y_zmq_version(int argc)
 {
   int major, minor, patch;
-  zmq_version (&major, &minor, &patch); 
+  zmq_version (&major, &minor, &patch);
   long dims[Y_DIMSIZE];
   dims[0] = 1; dims[1] = 3;
   int *a = ypush_i(dims);
@@ -131,7 +131,7 @@ void Y_zmq_ctx_set(int argc)
   object_socket *this;
   this = (object_socket *)ypush_obj(&zmq_socket_opaque, sizeof(object_socket));
   ypush_int(zmq_ctx_set(context, option, value));
-} 
+}
 
 
 void Y_zmq_socket(int argc)
@@ -251,7 +251,7 @@ void Y_zmq_special2(int argc)
 void Y_zmq_special3(int argc)
 {
   void *socket = get_socket(argc-1)->socket;
-  
+
   int sndhwm;
   size_t sndhwm_size = sizeof (sndhwm);
   zmq_getsockopt (socket, ZMQ_SNDHWM, &sndhwm, &sndhwm_size);
@@ -278,7 +278,7 @@ void Y_zmq_test(int argc)
 
 void Y__EAGAIN(int argc) { ypush_int(EAGAIN); }
 void Y__ENOTSUP(int argc) { ypush_int(ENOTSUP); }
-void Y__EFSM(int argc) { ypush_int(EFSM); }  
+void Y__EFSM(int argc) { ypush_int(EFSM); }
 void Y__ETERM(int argc) { ypush_int(ETERM); }
 void Y__ENOTSOCK(int argc) { ypush_int(ENOTSOCK); }
 void Y__EINTR(int argc) { ypush_int(EINTR); }
