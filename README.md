@@ -39,4 +39,15 @@ ar = zmq_recv(telsub,char,msglen,ZMQ_OPTION);
 status = zmq_disconnect(telsub,"tcp://"+zmq_server_ip+":"+zmq_tel_port);
 ```
 
+## Installation
+
+  - Install Yorick
+  - Install zero-mq. On linux, this package is often called zeromq (ubuntu, fedora, arch). We have run any version from 3.2.2 through 4.3. They are compatible (can run different versions on server and client).
+  - Build the plugin:
+  ```C
+    yorick -batch make.i
+    make clean; make; [sudo] make install;
+  ```
+  You might need to use sudo if your yorick install is system-wide.
+
 See zmq.i and zmq_examples.i for usage.
