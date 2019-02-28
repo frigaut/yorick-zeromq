@@ -48,6 +48,8 @@ func zmq_recv(socket,type,nelem,flags)
   totsize = sizeof(type)*nelem;
   data = array(type,nelem);
   nbytes = _zmq_recv(socket,&data,totsize,flags);
+  if (zmq_debug>10) write,format="received %d bytes\n",nbytes;
+  if (nbytes==-1) return;
   data = data(1:nbytes/sizeof(type));
   if (otype==string) data = strchar(_(data,0));
   return data;
